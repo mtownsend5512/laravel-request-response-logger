@@ -1,0 +1,50 @@
+{
+    "name": "mtownsend/laravel-request-response-logger",
+    "description": "Easily capture every incoming request and the corresponding outgoing response in your Laravel app.",
+    "keywords": [
+        "request",
+        "response",
+        "logging",
+        "debugging"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mark Townsend",
+            "email": "mtownsend5512@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mtownsend\\RequestResponseLogger\\": "src"
+        },
+        "files": []
+    },
+    "repositories": [],
+    "require": {
+        "php": ">=7.0|^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "orchestra/testbench": "^6.17"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mtownsend\\RequestResponseLogger\\Test\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mtownsend\\RequestResponseLogger\\Providers\\RequestResponseLoggerServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev"
+}
