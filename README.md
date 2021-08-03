@@ -100,7 +100,7 @@ return [
     /**
      * The model used to manage the database table for storing request and response logs.
      */
-    'logging_model' => \Mtownsend\RequestResponseLogger\Models\ArrayOrText::class,
+    'logging_model' => \Mtownsend\RequestResponseLogger\Models\RequestResponseLog::class,
 
     /**
      * When logging requests and responses, should the logging action be
