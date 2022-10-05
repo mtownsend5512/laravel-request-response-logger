@@ -2,13 +2,11 @@
 
 namespace Mtownsend\RequestResponseLogger\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Mtownsend\RequestResponseLogger\Casts\ArrayOrText;
 
 class RequestResponseLog extends Model
 {
-    use HasFactory;
 
     public $guarded = [
         'id'
