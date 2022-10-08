@@ -14,6 +14,10 @@ Install via composer:
 composer require mtownsend/laravel-request-response-logger
 ```
 
+## Upgrading from v1.0.X -> v2.0.X
+
+[Please see the release notes here.](https://github.com/mtownsend5512/laravel-request-response-logger/releases/tag/2.0.0)
+
 ### Registering the service provider (Laravel users)
 
 For Laravel 5.4 and lower, add the following line to your ``config/app.php``:
