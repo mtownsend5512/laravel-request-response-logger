@@ -114,6 +114,16 @@ return [
      */
     'get_json_values_as_array' => true,
 
+    /**
+     * The class responsible for determining if a request should be logged.
+     * 
+     * Out of the box options are:
+     * Mtownsend\RequestResponseLogger\Support\Logging\LogAll::class,
+     * Mtownsend\RequestResponseLogger\Support\Logging\LogClientErrorsOnly::class,
+     * Mtownsend\RequestResponseLogger\Support\Logging\LogSuccessOnly::class,
+     */
+    'should_log_handler' => \Mtownsend\RequestResponseLogger\Support\Logging\LogAll::class,
+
 ];
 ```
 
@@ -135,7 +145,65 @@ protected function schedule(Schedule $schedule)
 }
 ```
 
-## Advanced Usage
+# Advanced Usage
+
+## Conditional logging
+
+This package provides support for specifying custom conditions before a request/response is logged to the database.
+
+It comes with 3 default options out of the box:
+
+* LogAll - log request & response
+* LogClientErrorsOnly - log only responses that have an http status code of 4XX
+* LogSuccessOnly - log only responses that have an http status code of 2XX
+* ...or your own!
+
+Creating your own conditional logic is pretty straightforward and can be done in 2 simple steps:
+
+1. First, create a custom class that will perform your conditional checks for logging. For demonstration purposes let's say we're going to create a conditional logic check to only log requests made from external services and not your own web app. You can use the following code as a template.
+
+```php
+<?php
+
+namespace App\Support\Logging;
+
+use Illuminate\Http\Request;
+use Mtownsend\RequestResponseLogger\Support\Logging\Contracts\ShouldLogContract;
+
+class LogExternalRequests implements ShouldLogContract
+{
+    public $request;
+    public $response;
+
+    public function __construct(Request $request, $response)
+    {
+        $this->request = $request;
+        $this->response = $response;
+    }
+
+    /**
+     * Return a truth-y value to log the request and response.
+     * Return false-y value to skip logging.
+     * 
+     * @return bool
+     */
+    public function shouldLog(): bool
+    {
+        // Custom logic goes here...
+    }
+}
+```
+
+2. Open up your `config/log-requests-and-responses.php` and set the `should_log_handler` key to your class.
+
+```php
+[
+    //...
+    'should_log_handler' => \App\Support\Logging\LogExternalRequests::class,
+]
+```
+
+...and that's it! Your custom logging logic will now be used any time the middleware is executed.
 
 ## Model scopes
 
@@ -168,12 +236,11 @@ Then in your model, extend the base model:
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Mtownsend\RequestResponseLogger\Models\RequestResponseLog as BaseRequestResponseLog;
 
 class RequestResponseLog extends BaseRequestResponseLog
 {
-    use HasFactory;
+    //
 }
 ```
 
