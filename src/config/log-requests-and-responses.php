@@ -19,4 +19,14 @@ return [
      */
     'get_json_values_as_array' => true,
 
+    /**
+     * The class responsible for determining if a request should be logged.
+     * 
+     * Out of the box options are:
+     * Mtownsend\RequestResponseLogger\Support\Logging\LogAll::class,
+     * Mtownsend\RequestResponseLogger\Support\Logging\LogClientErrorsOnly::class,
+     * Mtownsend\RequestResponseLogger\Support\Logging\LogSuccessOnly::class,
+     */
+    'should_log_handler' => \Mtownsend\RequestResponseLogger\Support\Logging\LogAll::class,
+
 ];

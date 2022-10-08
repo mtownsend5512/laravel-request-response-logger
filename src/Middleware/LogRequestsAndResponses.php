@@ -44,8 +44,13 @@ class LogRequestsAndResponses
             'response_http_code' => $response->status()
         ];
 
-        $method = $this->dispatchType();
-        LogResponseRequest::$method($data);
+        $handler = config('log-requests-and-responses.should_log_handler');
+        $shouldLog = (new $handler($request, $response))->shouldLog();
+
+        if ($shouldLog) {
+            $method = $this->dispatchType();
+            LogResponseRequest::$method($data);
+        }
     }
 
     /**
@@ -54,7 +59,7 @@ class LogRequestsAndResponses
      *
      * @return string
      */
-    private function dispatchType()
+    private function dispatchType(): string
     {
         if (app()->version() < 8 && config('log-requests-and-responses.logging_should_queue')) {
             return 'dispatchNow';
