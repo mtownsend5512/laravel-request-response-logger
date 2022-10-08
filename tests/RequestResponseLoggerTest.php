@@ -6,6 +6,7 @@ use Illuminate\Routing\Route;
 use Mtownsend\RequestResponseLogger\Middleware\LogRequestsAndResponses;
 use Mtownsend\RequestResponseLogger\Models\RequestResponseLog;
 use Mtownsend\RequestResponseLogger\RequestResponseLogger;
+use Mtownsend\RequestResponseLogger\Support\Logging\LogAll;
 use Orchestra\Testbench\TestCase;
 
 class RequestResponseLoggerTest extends TestCase
@@ -13,6 +14,13 @@ class RequestResponseLoggerTest extends TestCase
     use RefreshDatabase;
 
     protected $loadEnvironmentVariables = false;
+
+    public $defaultConfig = [
+        'logging_model' => RequestResponseLog::class,
+        'logging_should_queue' => false,
+        'get_json_values_as_array' => true,
+        'should_log_handler' => LogAll::class,
+    ];
 
     /**
      * Ignore package discovery from.
@@ -77,7 +85,8 @@ class RequestResponseLoggerTest extends TestCase
         $app['config']->set('log-requests-and-responses', [
             'logging_model' => RequestResponseLog::class,
             'logging_should_queue' => false,
-            'get_json_values_as_array' => true
+            'get_json_values_as_array' => true,
+            'should_log_handler' => LogAll::class,
         ]);
     }
 
@@ -100,11 +109,15 @@ class RequestResponseLoggerTest extends TestCase
      */
     protected function defineRoutes($router)
     {
-        $router->any('/test', function () {
+        $router->any('/test/{code?}', function ($code = 200) {
             return response()->json([
                 'status' => 'success',
                 'received' => request()->all()
-            ]);
+            ], $code);
+        })->middleware(LogRequestsAndResponses::class);
+
+        $router->any('/html/{code?}', function ($code = 200) {
+            return response('<div><h1>An HTML header</h1><p>Some paragraph text below it</p></div>', $code);
         })->middleware(LogRequestsAndResponses::class);
     }
 
